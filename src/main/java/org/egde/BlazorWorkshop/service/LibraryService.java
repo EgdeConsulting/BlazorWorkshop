@@ -4,8 +4,7 @@ import org.egde.BlazorWorkshop.domain.Status;
 import org.egde.BlazorWorkshop.domain.dto.BookDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestClientException;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,41 +27,53 @@ public class LibraryService {
 
     public BookDto getBook(Integer id) {
         if (id == null) {
-            throw new RestClientException("ID missing", new HttpClientErrorException(HttpStatus.BAD_REQUEST));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID missing");
+        }
+        BookDto book;
+        try {
+            book = books.get(id);
+        } catch (IndexOutOfBoundsException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Couldn't find a book with id " + id);
         }
 
-        return books.get(id);
+        if (book == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Couldn't find a book with id " + id);
+        }
+
+        return book;
     }
 
     public void rentBook(Integer id) {
         if (id == null) {
-            throw new RestClientException("ID missing", new HttpClientErrorException(HttpStatus.BAD_REQUEST));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID missing");
         }
 
-        if (books.get(id).getStatus() == Status.AVAILABLE) {
-            books.get(id).setStatus(Status.RENTED);
-        } else {
-            throw new RestClientException("Cannot rent an already rented book",
-                    new HttpClientErrorException(HttpStatus.BAD_REQUEST));
+        try {
+            if (books.get(id).getStatus() == Status.AVAILABLE) {
+                books.get(id).setStatus(Status.RENTED);
+            } else {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot rent an already rented book");
+            }
+        } catch (IndexOutOfBoundsException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Couldn't find a book with id " + id);
         }
     }
 
     public void deliverBook(Integer id) {
         if (id == null) {
-            throw new RestClientException("ID missing", new HttpClientErrorException(HttpStatus.BAD_REQUEST));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID missing");
         }
 
         if (books.get(id).getStatus() == Status.RENTED) {
             books.get(id).setStatus(Status.AVAILABLE);
         } else {
-            throw new RestClientException("Cannot delivered an available book",
-                    new HttpClientErrorException(HttpStatus.BAD_REQUEST));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot deliver an available book");
         }
     }
 
     public void deleteBook(Integer id) {
         if (id == null) {
-            throw new RestClientException("ID missing", new HttpClientErrorException(HttpStatus.BAD_REQUEST));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID missing");
         }
 
         books.remove(id.intValue());

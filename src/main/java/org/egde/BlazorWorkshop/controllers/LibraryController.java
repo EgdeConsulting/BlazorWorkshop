@@ -28,12 +28,11 @@ public class LibraryController {
             throw new RestClientException("BookDto not found in request",
                     new HttpClientErrorException(HttpStatus.BAD_REQUEST));
         }
-
         libraryService.addBook(bookDto);
     }
 
     @GetMapping(value = "/{bookid}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public BookDto getBook(Integer bookid) {
+    public BookDto getBook(@PathVariable Integer bookid) {
         return libraryService.getBook(bookid);
     }
 
@@ -42,18 +41,18 @@ public class LibraryController {
         return libraryService.getBooks();
     }
 
-    @PostMapping(value = "/rent/{bookid}")
-    public void rentBook(Integer bookid) {
+    @PatchMapping(value = "/rent/{bookid}")
+    public void rentBook(@PathVariable Integer bookid) {
         libraryService.rentBook(bookid);
     }
 
-    @PostMapping(value = "/deliver/{bookid}")
-    public void deliverBook(Integer bookid) {
+    @PatchMapping(value = "/deliver/{bookid}")
+    public void deliverBook(@PathVariable Integer bookid) {
         libraryService.deliverBook(bookid);
     }
 
     @DeleteMapping(value = "/deletebook/{bookid}")
-    public void deleteBook(Integer bookid) {
+    public void deleteBook(@PathVariable Integer bookid) {
         libraryService.deleteBook(bookid);
     }
 }
