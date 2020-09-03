@@ -34,4 +34,35 @@ public class BookDto {
     public void setStatus(Status status) {
         this.status = status;
     }
+
+    public static Builder with() {
+        return new Builder();
+    }
+
+    public static final class Builder {
+        private BookDto bookDto;
+
+        private Builder() {
+            bookDto = new BookDto();
+        }
+
+        public Builder name(String name) {
+            bookDto.name = name;
+            return this;
+        }
+
+        public Builder author(String author) {
+            bookDto.author = author;
+            return this;
+        }
+
+        public Builder status(Status status) {
+            bookDto.status = status;
+            return this;
+        }
+
+        public BookDto build() {
+            return bookDto;
+        }
+    }
 }

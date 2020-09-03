@@ -14,7 +14,24 @@ public class LibraryService {
     private List<BookDto> books = new ArrayList<>();
 
     public LibraryService() {
-
+        books.add(BookDto.with()
+            .name("Lord of the Rings")
+            .author("J. R. R. Tolkien")
+            .status(Status.AVAILABLE)
+            .build()
+        );
+        books.add(BookDto.with()
+            .name("Harry Potter and the Philosophers Stone")
+            .author("J. K. Rowling")
+            .status(Status.AVAILABLE)
+            .build()
+        );
+        books.add(BookDto.with()
+                .name("Hitchhikers Guide to the Galaxy")
+                .author("Douglas Adams")
+                .status(Status.RENTED)
+                .build()
+        );
     }
 
     public void addBook(BookDto bookDto) {
